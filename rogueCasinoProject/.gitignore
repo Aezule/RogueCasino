@@ -1,0 +1,91 @@
+# This .gitignore file should be placed at the root of your Unity project directory
+#
+# Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
+
+# Unity generated
+/Library/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+.utmp/
+sysinfo.txt
+mono_crash.*
+
+# MemoryCaptures/Recordings (sensibles et lourds)
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Builds et outputs (APK, app, etc.)
+[Bb]uild/
+[Bb]uilds/
+*.apk
+*.aab
+*.unitypackage
+*.unitypackage.meta
+*.app
+*.exe
+*.dll  # Sauf tes customs dans Assets
+
+# IDEs et Editors
+.vs/
+.gradle/
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# JetBrains Rider / VS Code / Consulo
+[Aa]ssets/Plugins/Editor/JetBrains*/
+*.DotSettings.user
+.vscode/
+
+# Blender backups (si import)
+*.blend1
+*.blend1.meta
+*.blend2
+*.blend2.meta
+
+# Crashlytics / Tests
+crashlytics-build.properties
+InitTestScene*.unity*
+[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Addressables (avancé, ignore builds auto)
+[Aa]ssets/StreamingAssets/aa*/
+[Aa]ssets/AddressableAssetsData/link.xml*
+[Aa]ssets/Addressables_Temp*/
+[Aa]ssets/AddressableAssetsData/*/*.bin*
+/ServerData
+
+# Visual Scripting (généré)
+[Aa]ssets/Unity.VisualScripting.Generated/
+
+# OS spécifiques (ajoutés vs GitHub basique)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Asset Store tools (optionnel, décommente si tu les utilises)
+/[Aa]ssets/AssetStoreTools*
+
+# ProBuilder / autres tools (si installés)
+# /ProBuilderData/

@@ -22,7 +22,7 @@ public class CardData
     {
         switch (value)
         {
-            case 1: return "As";
+            case 14: return "As";
             case 11: return "Valet";
             case 12: return "Dame";
             case 13: return "Roi";

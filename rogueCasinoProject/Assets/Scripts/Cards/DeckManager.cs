@@ -1,26 +1,29 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
-    [Header("UI References")]
-    public Transform playerHand;
+    public static DeckManager Instance;
+
+    [Header("UI")]
     public GameObject cardUiPrefab;
     public TextMeshProUGUI deckCountText;
-
-    [Header("Card Sprites")]
     public Sprite backSprite;
+
+    [Header("Sprites")]
     public Sprite[] clubs;
     public Sprite[] diamonds;
     public Sprite[] hearts;
     public Sprite[] spades;
 
-    [Header("Hand Settings")]
-    public int startingHandSize = 7;
-    public float cardSpacing = 90f;
-
     private List<CardData> deck = new List<CardData>();
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -28,23 +31,24 @@ public class DeckManager : MonoBehaviour
         ShuffleDeck();
         LogDeckInConsole();
         UpdateDeckCountUI();
-        DrawStartingHand();
+
+        StartCoroutine(DrawInitialHandCoroutine());
     }
 
     void GenerateDeck()
+{
+    deck.Clear();
+
+    int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+
+    for (int i = 0; i < 13; i++)
     {
-        deck.Clear();
-
-        for (int i = 0; i < 13; i++)
-        {
-            deck.Add(new CardData(i + 1, "Trèfle", clubs[i]));
-            deck.Add(new CardData(i + 1, "Carreau", diamonds[i]));
-            deck.Add(new CardData(i + 1, "Coeur", hearts[i]));
-            deck.Add(new CardData(i + 1, "Pique", spades[i]));
-        }
-
-        Debug.Log("Deck généré : " + deck.Count + " cartes.");
+        deck.Add(new CardData(values[i], "Trèfle", clubs[i]));
+        deck.Add(new CardData(values[i], "Carreau", diamonds[i]));
+        deck.Add(new CardData(values[i], "Coeur", hearts[i]));
+        deck.Add(new CardData(values[i], "Pique", spades[i]));
     }
+}
 
     void ShuffleDeck()
     {
@@ -55,17 +59,15 @@ public class DeckManager : MonoBehaviour
             deck[i] = deck[randomIndex];
             deck[randomIndex] = temp;
         }
-
-        Debug.Log("Deck mélangé.");
     }
 
     void LogDeckInConsole()
     {
-        Debug.Log("Contenu du deck après mélange :");
+        Debug.Log("Deck mélangé :");
 
         for (int i = 0; i < deck.Count; i++)
         {
-            Debug.Log((i + 1) + " - " + deck[i].ToString());
+            Debug.Log($"{i} -> {deck[i]}");
         }
     }
 
@@ -75,53 +77,59 @@ public class DeckManager : MonoBehaviour
             deckCountText.text = deck.Count.ToString();
     }
 
-    void DrawStartingHand()
-    {
-        for (int i = 0; i < startingHandSize; i++)
-        {
-            DrawOneCard();
-        }
-    }
-
-    public void DrawOneCard()
+    CardData DrawTopCard()
     {
         if (deck.Count == 0)
-        {
-            Debug.Log("Le deck est vide.");
-            return;
-        }
+            return null;
 
         CardData drawnCard = deck[0];
         deck.RemoveAt(0);
-
-        GameObject newCardObject = Instantiate(cardUiPrefab, playerHand);
-        Card newCard = newCardObject.GetComponent<Card>();
-
-        newCard.Setup(drawnCard, backSprite, true);
-
-        ArrangeHand();
         UpdateDeckCountUI();
-
-        Debug.Log("Carte piochée : " + drawnCard.ToString());
+        return drawnCard;
     }
 
-    void ArrangeHand()
+    IEnumerator DrawInitialHandCoroutine()
     {
-        int cardCount = playerHand.childCount;
-        if (cardCount == 0) return;
-
-        float totalWidth = (cardCount - 1) * cardSpacing;
-        float startX = -totalWidth / 2f;
-
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < 7; i++)
         {
-            RectTransform cardRect = playerHand.GetChild(i).GetComponent<RectTransform>();
-            if (cardRect != null)
-            {
-                cardRect.anchoredPosition = new Vector2(startX + i * cardSpacing, 0f);
-                cardRect.localScale = Vector3.one;
-                cardRect.localRotation = Quaternion.identity;
-            }
+            DrawOneIntoFirstEmptySlot();
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    public void DrawOneIntoFirstEmptySlot()
+    {
+        if (HandManager.Instance == null || !HandManager.Instance.HasEmptySlot())
+            return;
+
+        CardData drawnCard = DrawTopCard();
+        if (drawnCard == null)
+            return;
+
+        HandManager.Instance.SpawnCardInFirstEmptySlot(cardUiPrefab, drawnCard, backSprite);
+
+        Debug.Log("Carte piochée : " + drawnCard);
+    }
+
+    public IEnumerator RefillEmptySlotsCoroutine()
+    {
+        List<int> emptySlots = HandManager.Instance.GetEmptySlotIndices();
+
+        foreach (int slotIndex in emptySlots)
+        {
+            CardData drawnCard = DrawTopCard();
+            if (drawnCard == null)
+                yield break;
+
+            GameObject cardObject = Instantiate(cardUiPrefab);
+            Card card = cardObject.GetComponent<Card>();
+            card.Setup(drawnCard, backSprite, slotIndex, true);
+
+            HandManager.Instance.PutCardInSlot(card, slotIndex);
+
+            Debug.Log("Carte repiochée : " + drawnCard);
+
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

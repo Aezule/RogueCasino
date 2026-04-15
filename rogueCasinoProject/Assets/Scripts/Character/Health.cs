@@ -1,69 +1,63 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
     public static Health Instance;
-    
+
     [Header("Config")]
-    public int maxHealth = 100;
-    public int currentHealth = 100;
-    public Text healthUI;  // "Vie: 75/100" (drag dans Inspector)
-    
+    public CombatConfig config;
+
+    [Header("UI")]
+    public Image fillImage;
+
+    public int MaxHP { get; private set; }
+    public int CurrentHP { get; private set; }
+
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            LoadHealth();
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
-    
+
     void Start()
     {
-        UpdateUI();
+        MaxHP = config.playerBaseHP;
+        CurrentHP = MaxHP;
+        UpdateBar();
     }
-    
-    // AJOUTER vie (ex: soin)
+
+    public void TakeDamage(int damage)
+    {
+        CurrentHP = Mathf.Max(CurrentHP - damage, 0);
+        UpdateBar();
+        Debug.Log($"[Joueur] -{damage} PV — {CurrentHP}/{MaxHP}");
+
+        if (CurrentHP <= 0)
+        {
+            Debug.Log("[Joueur] MORT");
+            StartCoroutine(GameOverRoutine());
+        }
+    }
+
+    IEnumerator GameOverRoutine()
+    {
+        yield return new WaitForSeconds(0.8f);
+        FadeScreen.Instance.FadeToBlack();
+    }
+
+
     public void Heal(int amount)
     {
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
-        UpdateUI();
-        SaveHealth();
-        Debug.Log($" +{amount} PV. Vie: {currentHealth}/{maxHealth}");
+        CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
+        UpdateBar();
+        Debug.Log($"[Joueur] +{amount} PV — {CurrentHP}/{MaxHP}");
     }
-    
-    // ENLEVER vie (ex: dégâts)
-    public bool TakeDamage(int damage)
+
+    void UpdateBar()
     {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);  // Pas négatif
-        UpdateUI();
-        SaveHealth();
-        
-        if (currentHealth <= 0)
-        {
-            Debug.Log("t es mort sale merde");
-            // GameOver();
-            return false;
-        }
-        Debug.Log($" -{damage} PV. Vie: {currentHealth}/{maxHealth}");
-        return true;
+        if (fillImage != null)
+            fillImage.fillAmount = (float)CurrentHP / MaxHP;
     }
-    
-    // UPDATE UI
-    void UpdateUI()
-    {
-        if (healthUI) healthUI.text = $"Vie: {currentHealth}/{maxHealth}";
-    }
-    
-    // SAUVEGARDE
-    void SaveHealth() => PlayerPrefs.SetInt("Health", currentHealth);
-    void LoadHealth() => currentHealth = PlayerPrefs.GetInt("Health", maxHealth);
 }

@@ -56,7 +56,7 @@ public static class PokerEvaluator
             case ComboType.CARRE: return 100;
             case ComboType.QUINTE_FLUSH: return 150;
             case ComboType.QUINTE_FLUSH_ROYALE: return 200;
-            default: return 1000;
+            default: return 1000; // TODO : Valeur haute pour test
         }
     }
 

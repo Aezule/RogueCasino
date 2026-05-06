@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // Mohammad SLIM — Map & Progression
 // Flat-top hex grid, horizontal : Home (gauche) → colonnes → Boss (droite)
@@ -22,14 +23,6 @@ public class MapManager : MonoBehaviour
 
     // --- Player ---
     public PlayerMapController player;
-
-    // --- Scaling ennemis ---
-    public float baseEnemyHP     = 50f;
-    public float baseEnemyDamage = 10f;
-    private int runCount = 0;
-
-    public float GetScaledHP(HexCase hex)     => baseEnemyHP     * (1f + hex.q * 0.3f);
-    public float GetScaledDamage(HexCase hex) => baseEnemyDamage * (1f + hex.q * 0.2f);
 
     // --- Paramètres map ---
     public int depth = 5;   // nombre de colonnes entre Home et Boss
@@ -59,7 +52,7 @@ public void GenerateMap()
     map.Clear();
     int centerLane = 1;
     int shopPlaced = 0;
-    int maxShops   = Random.Range(2, 4); // 2 ou 3 shops par round
+    int maxShops = Random.Range(2, 4); // 2 ou 3 shops par round
 
     // Home — depth 0
     startCase = new HexCase(0, centerLane, CaseType.Home, 0);
@@ -77,14 +70,9 @@ public void GenerateMap()
 
     for (int d = 1; d <= depth; d++)
     {
-        if (!shape.ContainsKey(d))
-            continue;
-
         foreach (int lane in shape[d])
         {
-            CaseType type = GetRandomCaseType(ref shopPlaced, maxShops);
-            // Les lignes extérieures sont visuellement à x=(d-0.5)*W,
-            // donc leur profondeur de progression = 2*d-1 (avant le centre 2*d).
+            CaseType type = GetRandomCaseType(d, lane, ref shopPlaced, maxShops);
             int hexDepth = (lane == centerLane) ? 2 * d : 2 * d - 1;
             HexCase newCase = new HexCase(d, lane, type, hexDepth);
             map.Add((d, lane), newCase);
@@ -102,7 +90,6 @@ public void GenerateMap()
 
         if (c.r == centerLane)
         {
-            // Ligne centrale : 6 voisins possibles
             TryConnect(c, c.q - 1, centerLane);  // centre gauche
             TryConnect(c, c.q + 1, centerLane);  // centre droite
             TryConnect(c, c.q, 0);                // même colonne haut
@@ -112,7 +99,6 @@ public void GenerateMap()
         }
         else if (c.r == 0)
         {
-            // Ligne du haut : 4 voisins possibles
             TryConnect(c, c.q - 1, 0);            // même ligne gauche
             TryConnect(c, c.q + 1, 0);            // même ligne droite
             TryConnect(c, c.q - 1, centerLane);   // centre col précédente
@@ -120,7 +106,6 @@ public void GenerateMap()
         }
         else // c.r == 2
         {
-            // Ligne du bas : 4 voisins possibles
             TryConnect(c, c.q - 1, 2);            // même ligne gauche
             TryConnect(c, c.q + 1, 2);            // même ligne droite
             TryConnect(c, c.q - 1, centerLane);   // centre col précédente
@@ -141,21 +126,38 @@ private void TryConnect(HexCase c, int targetQ, int targetLane)
     }
 }
 
-    private CaseType GetRandomCaseType(ref int shopPlaced, int maxShops)
+    private CaseType GetRandomCaseType(int q, int lane, ref int shopPlaced, int maxShops)
     {
-        int roll = Random.Range(0, 100);
-        if (roll < 50) return CaseType.Combat;
-        if (roll < 70)
+        if (shopPlaced < maxShops && Random.value < 0.3f && !HasAdjacentShop(q, lane))
         {
-            if (shopPlaced < maxShops) { shopPlaced++; return CaseType.Shop; }
-            return CaseType.Combat;
+            shopPlaced++;
+            return CaseType.Shop;
         }
-        if (roll < 85)
-        {
-            if (shopPlaced < maxShops) { shopPlaced++; return CaseType.Shop; }
-            return CaseType.Combat;
-        }
+
         return CaseType.Combat;
+    }
+
+    private bool HasAdjacentShop(int q, int lane)
+    {
+        if (IsShopAt(q - 1, lane) || IsShopAt(q + 1, lane))
+            return true;
+
+        if (lane == 1)
+        {
+            return IsShopAt(q, 0) || IsShopAt(q, 2) || IsShopAt(q + 1, 0) || IsShopAt(q + 1, 2);
+        }
+
+        if (lane == 0)
+        {
+            return IsShopAt(q - 1, 1) || IsShopAt(q, 1) || IsShopAt(q - 1, 0) || IsShopAt(q + 1, 0);
+        }
+
+        return IsShopAt(q - 1, 1) || IsShopAt(q, 1) || IsShopAt(q - 1, 2) || IsShopAt(q + 1, 2);
+    }
+
+    private bool IsShopAt(int q, int lane)
+    {
+        return map.TryGetValue((q, lane), out HexCase existing) && existing.type == CaseType.Shop;
     }
 
     // =========================================================
@@ -256,23 +258,19 @@ private Vector3 ColLaneToWorld(int col, int lane)
     }
 
     // =========================================================
-    //  BOSS VAINCU → NOUVELLE MAP + SCALING
+    //  BOSS VAINCU → NOUVELLE MAP
     // =========================================================
 
     public void OnBossDefeated()
     {
-        runCount++;
-        Debug.Log($"Boss vaincu ! Run {runCount}");
-
-        baseEnemyHP     *= 1.2f;
-        baseEnemyDamage *= 1.15f;
+        Debug.Log("Boss vaincu !");
 
         GenerateMap();
         RenderMap();
         if (player != null) player.InitAtStart(startCase);
         UpdateTilesVisuals();
 
-        Debug.Log($"Nouvelle map — HP={baseEnemyHP:F0} DMG={baseEnemyDamage:F0}");
+        Debug.Log("Nouvelle map générée");
     }
 
     // =========================================================
@@ -288,9 +286,12 @@ private Vector3 ColLaneToWorld(int col, int lane)
 
     void Update()
     {
-        if (!Input.GetMouseButtonDown(0)) return;
+        if (Mouse.current == null) return;
+        if (!Mouse.current.leftButton.wasPressedThisFrame) return;
+        if (Camera.main == null) return;
 
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(worldPos.x, worldPos.y), Vector2.zero);
         if (hit.collider == null) return;
 

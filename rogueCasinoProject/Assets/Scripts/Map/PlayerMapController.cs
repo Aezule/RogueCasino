@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMapController : MonoBehaviour
 {
@@ -37,25 +38,18 @@ public class PlayerMapController : MonoBehaviour
 
     void TriggerCaseEvent(HexCase hex)
     {
-        float hp  = mapManager.GetScaledHP(hex);
-        float dmg = mapManager.GetScaledDamage(hex);
-
         switch (hex.type)
         {
             case CaseType.Combat:
-                Debug.Log($"Combat ! Ennemi HP={hp:F0} DMG={dmg:F0}");
-                break;
-            case CaseType.Casino:
-                Debug.Log("Shop !");
+                Debug.Log("Combat !");
+                SceneManager.LoadScene("Combat");
                 break;
             case CaseType.Shop:
                 Debug.Log("Shop !");
-                break;
-            case CaseType.Event:
-                Debug.Log($"Combat ! Ennemi HP={hp:F0} DMG={dmg:F0}");
+                SceneManager.LoadScene("Shop");
                 break;
             case CaseType.Boss:
-                Debug.Log($"Boss fight ! HP={hp:F0} DMG={dmg:F0}");
+                Debug.Log("Boss fight !");
                 // TODO (Léo) : lancer le combat de boss
                 // Après victoire, appeler : mapManager.OnBossDefeated();
                 // Décommenter pour tester :

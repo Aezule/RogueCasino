@@ -270,7 +270,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -321,6 +321,10 @@ PrefabInstance:
     - target: {fileID: 8114307129565976136, guid: 1fa9025f24654404c94c2480ceac8db4, type: 3}
       propertyPath: m_Name
       value: HexNode
+      objectReference: {fileID: 0}
+    - target: {fileID: 8114307129565976136, guid: 1fa9025f24654404c94c2480ceac8db4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9058881215728298258, guid: 1fa9025f24654404c94c2480ceac8db4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -397,10 +401,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapManager
   hexNodePrefab: {fileID: 669728099}
+  hexRadius: 0.5
   spacing: 1.5
   player: {fileID: 146674673}
-  baseEnemyHP: 50
-  baseEnemyDamage: 10
   depth: 4
   width: 3
 --- !u!4 &2136493151

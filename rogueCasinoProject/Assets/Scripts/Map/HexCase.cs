@@ -4,7 +4,7 @@ public class HexCase
 {
     public int q;           // colonne (depth, gauche→droite)
     public int r;           // lane   (0=bas, width-1=haut)
-    public int depth;       // profondeur dans la map (pour le scaling)
+    public int depth;       // profondeur dans la map
     public CaseType type;
     public bool isVisited = false;
 

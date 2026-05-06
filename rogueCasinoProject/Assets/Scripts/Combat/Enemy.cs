@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Data")]
     public List<EnemyData> possibleEnemies;
+    [SerializeField] private EnemyData bossEnemyData;
     public EnemyData data { get; private set; }
 
     [Header("UI")]
@@ -29,7 +30,19 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        data = possibleEnemies[Random.Range(0, possibleEnemies.Count)];
+        if (MapState.GetPendingEncounter() == MapState.EncounterType.Boss)
+        {
+            data = ResolveBossEnemyData();
+            if (data == null)
+            {
+                Debug.LogError("Combat boss demandé mais aucun EnemyData_Boss trouvé. Fallback sur un ennemi aléatoire.");
+                data = possibleEnemies[Random.Range(0, possibleEnemies.Count)];
+            }
+        }
+        else
+        {
+            data = possibleEnemies[Random.Range(0, possibleEnemies.Count)];
+        }
 
         MaxHP = data.GetMaxHP();
         CurrentHP = MaxHP;
@@ -40,6 +53,19 @@ public class Enemy : MonoBehaviour
         Debug.Log($"[Combat] Ennemi : {data.enemyName} — PV : {MaxHP} | Dégâts : {data.GetDamageMin()}-{data.GetDamageMax()} | Crit : {data.GetCritChance() * 100}%");
 
         UpdateBar();
+    }
+
+    private EnemyData ResolveBossEnemyData()
+    {
+        if (bossEnemyData != null) return bossEnemyData;
+
+        foreach (EnemyData enemy in possibleEnemies)
+        {
+            if (enemy != null && enemy.name == "EnemyData_Boss")
+                return enemy;
+        }
+
+        return null;
     }
 
     public void TakeDamage(int damage)

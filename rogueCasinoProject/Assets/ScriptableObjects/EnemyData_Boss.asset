@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a28f62538a234cc4f968999cbfdb04eb, type: 3}
-  m_Name: EnemyData_OgreJoueur
+  m_Name: EnemyData_Boss
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Ogre joueur
-  sprite: {fileID: 21300000, guid: 8b9b2bf4ea5811e4aac5bdcacc7a35c1, type: 3}
-  baseHP: 240
-  damageMin: 5
-  damageMax: 45
-  critChance: 0.05
-  critMultiplier: 3
+  enemyName: Directeur du Casino
+  sprite: {fileID: 21300000, guid: e016be64175589d49a9b5e229a8275c7, type: 3}
+  baseHP: 200
+  damageMin: 1
+  damageMax: 10
+  critChance: 0.5
+  critMultiplier: 8
   hpMultiplier: 1
   damageMultiplier: 1
   critChanceMultiplier: 1

@@ -42,18 +42,22 @@ public class PlayerMapController : MonoBehaviour
         {
             case CaseType.Combat:
                 Debug.Log("Combat !");
+                // Sauvegarder l'état avant de quitter
+                MapState.SaveState(mapManager.map, currentCase);
+                MapState.SetPendingEncounter(MapState.EncounterType.Combat);
                 SceneManager.LoadScene("Combat");
                 break;
             case CaseType.Shop:
                 Debug.Log("Shop !");
+                // Sauvegarder l'état avant de quitter
+                MapState.SaveState(mapManager.map, currentCase);
                 SceneManager.LoadScene("Shop");
                 break;
             case CaseType.Boss:
                 Debug.Log("Boss fight !");
-                // TODO (Léo) : lancer le combat de boss
-                // Après victoire, appeler : mapManager.OnBossDefeated();
-                // Décommenter pour tester :
-                // mapManager.OnBossDefeated();
+                MapState.SaveState(mapManager.map, currentCase);
+                MapState.SetPendingEncounter(MapState.EncounterType.Boss);
+                SceneManager.LoadScene("Combat");
                 break;
         }
     }

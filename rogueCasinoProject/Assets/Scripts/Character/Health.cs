@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
@@ -44,7 +45,10 @@ public class Health : MonoBehaviour
     IEnumerator GameOverRoutine()
     {
         yield return new WaitForSeconds(0.8f);
-        FadeScreen.Instance.FadeToBlack();
+        if (FadeScreen.Instance != null)
+            FadeScreen.Instance.FadeToBlackAndLoadMenu();
+        else
+            SceneManager.LoadScene("Menu");
     }
 
 

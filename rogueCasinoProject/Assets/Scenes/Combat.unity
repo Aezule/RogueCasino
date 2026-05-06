@@ -2565,6 +2565,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: addf5c0306ff91b49a77d4e5baf1bf51, type: 2}
   - {fileID: 11400000, guid: 5691d4d6f9e8b6045a7251612b9e569b, type: 2}
   - {fileID: 11400000, guid: 051f52999668e024082551935b28bacd, type: 2}
+  bossEnemyData: {fileID: 11400000, guid: 664939dc027a5fe488802da33a4d7cbc, type: 2}
   visualImage: {fileID: 1610678053}
   healthBarFill: {fileID: 147983952}
   visualRect: {fileID: 1610678052}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public enum CombatState { PLAYER_TURN, ENEMY_TURN }
 
@@ -27,7 +28,12 @@ public class CombatManager : MonoBehaviour
     {
         State = CombatState.PLAYER_TURN;
         ActionsLeft = config.actionsPerTurn;
-        Debug.Log($"=== Tour Joueur — {ActionsLeft} actions ===");
+        
+        // affiche le tour du joueur
+        if (TurnDisplay.Instance != null)
+            TurnDisplay.Instance.UpdateTurnDisplay(ActionsLeft, config.actionsPerTurn);
+        
+        Debug.Log($"Tour Joueur — {ActionsLeft} actions ===");
     }
 
     public void PlayerUsedAction()
@@ -35,16 +41,24 @@ public class CombatManager : MonoBehaviour
         if (State != CombatState.PLAYER_TURN) return;
 
         ActionsLeft--;
-        Debug.Log($"Action utilisée. Reste : {ActionsLeft}");
+        
+        // update l'affichage de l'affichage du tiour du jouer 
+        if (TurnDisplay.Instance != null)
+            TurnDisplay.Instance.UpdateTurnDisplay(ActionsLeft, config.actionsPerTurn);
 
         if (ActionsLeft <= 0)
             StartCoroutine(EnemyTurnRoutine());
     }
 
-    System.Collections.IEnumerator EnemyTurnRoutine()
+    IEnumerator EnemyTurnRoutine()
     {
         State = CombatState.ENEMY_TURN;
-        Debug.Log("=== Tour Ennemi ===");
+        
+        // ici affiche le tour de l'enemi si le combat est lancé
+        if (TurnDisplay.Instance != null)
+            TurnDisplay.Instance.ShowEnemyTurn();
+        
+        Debug.Log("Tour Enemi");
 
         yield return new WaitForSeconds(1f);
 
@@ -57,9 +71,8 @@ public class CombatManager : MonoBehaviour
     }
 
     public void OnEnemyDied()
-{
-    Debug.Log("=== Ennemi vaincu ===");
-    // TODO : transition vers casino
-}
-
+    {
+        Debug.Log("Ennemi vaincu -> Lancement casino");
+        // TODO : transition vers scene casino Théo
+    }
 }

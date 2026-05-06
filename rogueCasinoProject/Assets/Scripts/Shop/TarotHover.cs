@@ -2,28 +2,30 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Net.Mime;
 
-public class TarotHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TarotHoverVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public float hoverScale = 1.2f;
+    public float rotateAmount = 5f;
 
-    private Image cardImage;
     private RectTransform rect;
-    private Shadow shadow; // Remplace Outline
+    private Image cardImage;
+    private Shadow shadow;
     private Vector3 originalScale;
     private Vector3 originalRotation;
+    private bool disabledHover = false;
 
     void Start()
     {
-        cardImage = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
+        cardImage = GetComponent<Image>();
         shadow = GetComponent<Shadow>();
 
         originalScale = rect.localScale;
         originalRotation = rect.localEulerAngles;
 
-        cardImage.color = Color.white;
+        if (cardImage != null)
+            cardImage.color = Color.white;
 
         if (shadow == null)
         {
@@ -35,23 +37,37 @@ public class TarotHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (disabledHover) return;
+
         DOTween.Kill(transform);
         DOTween.Kill(shadow);
 
         rect.DOScale(hoverScale, 0.2f);
-        rect.DORotate(originalRotation + Vector3.forward * 5, 0.5f).SetLoops(-1, LoopType.Yoyo);
-
-        // CYAN GLOW #00FFFF
+        rect.DORotate(originalRotation + Vector3.forward * rotateAmount, 0.5f).SetLoops(-1, LoopType.Yoyo);
         shadow.effectColor = new Color(0f, 1f, 1f, 0.8f);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (disabledHover) return;
+
         DOTween.Kill(transform);
         DOTween.Kill(shadow);
 
         rect.DOScale(originalScale, 0.2f);
         rect.DORotate(originalRotation, 0.3f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0f);
+    }
+
+    public void DisableHover()
+    {
+        disabledHover = true;
+
+        DOTween.Kill(transform);
+        DOTween.Kill(shadow);
+
+        rect.localScale = originalScale;
+        rect.localEulerAngles = originalRotation;
         shadow.effectColor = new Color(0f, 0f, 0f, 0f);
     }
 }

@@ -198,6 +198,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &202790257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 202790259}
+  - component: {fileID: 202790258}
+  m_Layer: 0
+  m_Name: InventoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &202790258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202790257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f6c932d19d10341a250e1a9aa3ba24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  maxTarotCard: 3
+  tarotCards: []
+--- !u!4 &202790259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202790257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 384.59998, y: 216.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &204025327
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,6 +701,7 @@ GameObject:
   - component: {fileID: 1049647514}
   - component: {fileID: 1049647513}
   - component: {fileID: 1049647515}
+  - component: {fileID: 1049647516}
   m_Layer: 5
   m_Name: Tarot_3
   m_TagString: Untagged
@@ -732,6 +779,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopSlot
   hoverScale: 1.2
+  rotateAmount: 5
+--- !u!114 &1049647516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049647511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c051439730f0d47bad06e0cb6a2419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TarotBuyCard
+  buyScale: 1.35
+  disappearDuration: 0.35
 --- !u!1 &1149241747
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +806,7 @@ GameObject:
   - component: {fileID: 1149241750}
   - component: {fileID: 1149241749}
   - component: {fileID: 1149241751}
+  - component: {fileID: 1149241752}
   m_Layer: 5
   m_Name: Tarot_2
   m_TagString: Untagged
@@ -821,6 +884,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopSlot
   hoverScale: 1.2
+  rotateAmount: 5
+--- !u!114 &1149241752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149241747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c051439730f0d47bad06e0cb6a2419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TarotBuyCard
+  buyScale: 1.35
+  disappearDuration: 0.35
 --- !u!1 &2050364430
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +1009,8 @@ GameObject:
   - component: {fileID: 2143100344}
   - component: {fileID: 2143100343}
   - component: {fileID: 2143100345}
+  - component: {fileID: 2143100346}
+  - component: {fileID: 2143100347}
   m_Layer: 5
   m_Name: Tarot_1
   m_TagString: Untagged
@@ -1008,6 +1088,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopSlot
   hoverScale: 1.2
+  rotateAmount: 5
+--- !u!114 &2143100346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143100341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5226c2095b7bff42a3c5cf533dd4380, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TarotCardData
+  cardName: 
+--- !u!114 &2143100347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143100341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41c051439730f0d47bad06e0cb6a2419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TarotBuyCard
+  buyScale: 1.35
+  disappearDuration: 0.35
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1016,3 +1124,4 @@ SceneRoots:
   - {fileID: 204025330}
   - {fileID: 834598246}
   - {fileID: 78851158}
+  - {fileID: 202790259}

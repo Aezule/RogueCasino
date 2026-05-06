@@ -36,19 +36,19 @@ public class DeckManager : MonoBehaviour
     }
 
     void GenerateDeck()
-{
-    deck.Clear();
-
-    int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-
-    for (int i = 0; i < 13; i++)
     {
-        deck.Add(new CardData(values[i], "Trèfle", clubs[i]));
-        deck.Add(new CardData(values[i], "Carreau", diamonds[i]));
-        deck.Add(new CardData(values[i], "Coeur", hearts[i]));
-        deck.Add(new CardData(values[i], "Pique", spades[i]));
+        deck.Clear();
+
+        int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+
+        for (int i = 0; i < 13; i++)
+        {
+            deck.Add(new CardData(values[i], "Trèfle", clubs[i]));
+            deck.Add(new CardData(values[i], "Carreau", diamonds[i]));
+            deck.Add(new CardData(values[i], "Coeur", hearts[i]));
+            deck.Add(new CardData(values[i], "Pique", spades[i]));
+        }
     }
-}
 
     void ShuffleDeck()
     {

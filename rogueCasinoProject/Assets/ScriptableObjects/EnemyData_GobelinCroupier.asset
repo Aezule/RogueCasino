@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyData_GobelinCroupier
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Gobelin croupier
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 65f50a5b04b5373418088a357d54d5a0, type: 3}
   baseHP: 80
   damageMin: 25
   damageMax: 100

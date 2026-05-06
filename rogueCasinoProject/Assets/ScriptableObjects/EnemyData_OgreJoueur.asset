@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyData_OgreJoueur
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Ogre joueur
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 8b9b2bf4ea5811e4aac5bdcacc7a35c1, type: 3}
   baseHP: 280
   damageMin: 5
   damageMax: 45

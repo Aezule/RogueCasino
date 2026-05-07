@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public enum CombatState { PLAYER_TURN, ENEMY_TURN }
 
@@ -72,7 +73,18 @@ public class CombatManager : MonoBehaviour
 
     public void OnEnemyDied()
     {
-        Debug.Log("Ennemi vaincu -> Lancement casino");
-        // TODO : transition vers scene casino Théo
+        if (MapState.GetPendingEncounter() == MapState.EncounterType.Boss)
+        {
+            Debug.Log("Boss vaincu -> Fade noir puis retour Menu");
+            if (FadeScreen.Instance != null)
+                FadeScreen.Instance.FadeToBlackAndLoadMenu();
+            else
+                SceneManager.LoadScene("Menu");
+            return;
+        }
+
+        Debug.Log("Ennemi vaincu -> Retour à la map");
+        MapState.ClearPendingEncounter();
+        SceneManager.LoadScene("Map");
     }
 }

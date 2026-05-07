@@ -49,14 +49,14 @@ public static class PokerEvaluator
         {
             case ComboType.PAIRE: return 10;
             case ComboType.DOUBLE_PAIRE: return 20;
-            case ComboType.BRELAN: return 30;
+            case ComboType.BRELAN: return 35;
             case ComboType.QUINTE: return 40;
             case ComboType.FLUSH: return 45;
             case ComboType.FULL: return 60;
-            case ComboType.CARRE: return 80;
-            case ComboType.QUINTE_FLUSH: return 100;
-            case ComboType.QUINTE_FLUSH_ROYALE: return 150;
-            default: return 0;
+            case ComboType.CARRE: return 100;
+            case ComboType.QUINTE_FLUSH: return 150;
+            case ComboType.QUINTE_FLUSH_ROYALE: return 200;
+            default: return 1000; // TODO : Valeur haute pour test
         }
     }
 

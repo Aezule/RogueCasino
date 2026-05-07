@@ -36,11 +36,42 @@ public class MapManager : MonoBehaviour
     {
         hexRadius = 0.5f;
         spacing = 1.0f;
-        GenerateMap();
-        RenderMap();
-        if (player != null) player.InitAtStart(startCase);
-        UpdateTilesVisuals();
-        Debug.Log("Map générée !");
+
+        // Charger l'état sauvegardé si disponible, sinon générer une nouvelle map
+        if (MapState.HasSavedState())
+        {
+            MapState.LoadIntoMap(map, out int playerQ, out int playerR);
+            startCase = map[(0, 1)]; // Home est toujours en (0, 1)
+            bossCase = map[(depth + 1, 1)]; // Boss est toujours en (depth+1, 1)
+            
+            // Restaurer l'état des voisins après le chargement
+            foreach (var hexCase in map.Values)
+            {
+                hexCase.neighbors.Clear();
+            }
+            RebuildNeighbors();
+            
+            RenderMap();
+            if (player != null)
+            {
+                // Restaurer le joueur à sa position sauvegardée
+                if (map.TryGetValue((playerQ, playerR), out HexCase playerCase))
+                {
+                    player.currentCase = playerCase;
+                    Debug.Log($"Joueur restauré en ({playerQ}, {playerR})");
+                }
+            }
+            UpdateTilesVisuals();
+            Debug.Log("Map restaurée !");
+        }
+        else
+        {
+            GenerateMap();
+            RenderMap();
+            if (player != null) player.InitAtStart(startCase);
+            UpdateTilesVisuals();
+            Debug.Log("Map générée !");
+        }
     }
 
     // =========================================================
@@ -84,6 +115,25 @@ public void GenerateMap()
     map.Add((depth + 1, centerLane), bossCase);
 
     // Connexions basées sur l'adjacence hexagonale réelle du layout staggered
+    RebuildNeighbors();
+}
+
+private void TryConnect(HexCase c, int targetQ, int targetLane)
+{
+    if (map.TryGetValue((targetQ, targetLane), out HexCase target))
+    {
+        if (!c.neighbors.Contains(target))
+            c.neighbors.Add(target);
+        if (!target.neighbors.Contains(c))
+            target.neighbors.Add(c);
+    }
+}
+
+private void RebuildNeighbors()
+{
+    int centerLane = 1;
+    
+    // Connexions basées sur l'adjacence hexagonale réelle du layout staggered
     foreach (var kv in map)
     {
         HexCase c = kv.Value;
@@ -111,18 +161,6 @@ public void GenerateMap()
             TryConnect(c, c.q - 1, centerLane);   // centre col précédente
             TryConnect(c, c.q, centerLane);        // centre même colonne
         }
-    }
-
-}
-
-private void TryConnect(HexCase c, int targetQ, int targetLane)
-{
-    if (map.TryGetValue((targetQ, targetLane), out HexCase target))
-    {
-        if (!c.neighbors.Contains(target))
-            c.neighbors.Add(target);
-        if (!target.neighbors.Contains(c))
-            target.neighbors.Add(c);
     }
 }
 

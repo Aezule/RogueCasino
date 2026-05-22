@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
@@ -22,13 +22,34 @@ public class Card : MonoBehaviour, IPointerClickHandler
         faceUp = showFace;
         selected = false;
 
-        if (cardFaceImage != null)
+        if (cardFaceImage != null && cardData != null)
             cardFaceImage.sprite = cardData.sprite;
 
         if (cardBackImage != null)
             cardBackImage.sprite = backSprite;
 
         UpdateVisualState();
+    }
+
+    public void ShowBack(Sprite backSprite = null)
+    {
+        faceUp = false;
+
+        if (cardBackImage != null && backSprite != null)
+            cardBackImage.sprite = backSprite;
+
+        UpdateVisualState();
+    }
+
+    public void ShowFront()
+    {
+        faceUp = true;
+        UpdateVisualState();
+    }
+
+    public Sprite GetFrontSprite()
+    {
+        return data != null ? data.sprite : null;
     }
 
     public void SetSelected(bool value)

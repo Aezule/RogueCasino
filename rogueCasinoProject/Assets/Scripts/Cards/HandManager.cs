@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,15 +41,14 @@ public class HandManager : MonoBehaviour
 
     public void PutCardInSlot(Card card, int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= slots.Length)
-            return;
-
-        if (cardsInSlots[slotIndex] != null)
+        if (slotIndex < 0 || slotIndex >= slots.Length || card == null)
             return;
 
         RectTransform cardRect = card.GetComponent<RectTransform>();
-        cardRect.SetParent(slots[slotIndex], false);
+        if (cardRect == null)
+            return;
 
+        cardRect.SetParent(slots[slotIndex], false);
         cardRect.anchorMin = Vector2.zero;
         cardRect.anchorMax = Vector2.one;
         cardRect.offsetMin = Vector2.zero;
@@ -61,17 +61,47 @@ public class HandManager : MonoBehaviour
         cardsInSlots[slotIndex] = card;
     }
 
-    public void SpawnCardInFirstEmptySlot(GameObject cardPrefab, CardData data, Sprite backSprite)
+    public IEnumerator SpawnCardInFirstEmptySlotRoutine(GameObject cardPrefab, CardData data, Sprite backSprite)
     {
         int slotIndex = GetFirstEmptySlotIndex();
         if (slotIndex == -1)
-            return;
+            yield break;
+
+        yield return StartCoroutine(SpawnCardInSlotRoutine(cardPrefab, data, backSprite, slotIndex));
+    }
+
+    public IEnumerator SpawnCardInSlotRoutine(GameObject cardPrefab, CardData data, Sprite backSprite, int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length)
+            yield break;
+
+        if (cardsInSlots[slotIndex] != null)
+            yield break;
 
         GameObject cardObject = Instantiate(cardPrefab);
         Card card = cardObject.GetComponent<Card>();
-        card.Setup(data, backSprite, slotIndex, true);
+        if (card == null)
+        {
+            Destroy(cardObject);
+            yield break;
+        }
 
+        card.Setup(data, backSprite, slotIndex, true);
         PutCardInSlot(card, slotIndex);
+
+        CanvasGroup cg = card.GetComponent<CanvasGroup>();
+        if (cg == null) cg = card.gameObject.AddComponent<CanvasGroup>();
+
+        cg.alpha = 0f;
+        cg.blocksRaycasts = false;
+        cg.interactable = false;
+
+        if (UICombatAnimations.Instance != null)
+            yield return StartCoroutine(UICombatAnimations.Instance.AnimateDrawReveal(card, slots[slotIndex]));
+
+        cg.alpha = 1f;
+        cg.blocksRaycasts = true;
+        cg.interactable = true;
     }
 
     public void ToggleCardSelection(Card card)

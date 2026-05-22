@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d6160341ad182ab42b8186af74f8903c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 568528898720b7344a1ad8fa628c6077, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -244,6 +244,7 @@ MonoBehaviour:
   cardFaceImage: {fileID: 1510749671644092223}
   cardBackImage: {fileID: 8854929169361686753}
   selectionBorder: {fileID: 8546069626517628604}
+  slotIndex: -1
 --- !u!1 &8546069626517628604
 GameObject:
   m_ObjectHideFlags: 0

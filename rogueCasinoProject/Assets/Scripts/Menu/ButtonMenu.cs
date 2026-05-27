@@ -7,6 +7,11 @@ public class ButtonMenu : MonoBehaviour
     {
         // Nettoyer l'état sauvegardé pour générer une nouvelle map
         MapState.ClearSavedState();
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.ResetTarots();
+
+        }
         SceneManager.LoadScene("Map");
     }
 

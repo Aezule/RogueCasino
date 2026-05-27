@@ -52,4 +52,8 @@ public class Inventory : MonoBehaviour
 
         Debug.Log(result);
     }
+    public void ResetTarots()
+    {
+        tarotCards = new string[3];
+    }
 }

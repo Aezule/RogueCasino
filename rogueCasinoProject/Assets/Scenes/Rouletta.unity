@@ -628,7 +628,7 @@ MonoBehaviour:
   spriteRoue: {fileID: 21300000, guid: 47ec665227c626449a0e0305385a3d11, type: 3}
   spriteTapis: {fileID: 21300000, guid: 0b34e1ca37f210740b3a00aefa8bd4da, type: 3}
   debugStartCoins: 1000
-  debugOverlays: 1
+  debugOverlays: 0
 --- !u!114 &995329282
 MonoBehaviour:
   m_ObjectHideFlags: 0
